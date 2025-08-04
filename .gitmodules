@@ -1,0 +1,3 @@
+[submodule "projetos/Portfolio_EdisonCake"]
+	path = projetos/Portfolio_EdisonCake
+	url = https://github.com/EdisonCake/Portfolio.git
