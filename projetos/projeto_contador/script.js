@@ -1,95 +1,79 @@
-const pageTurn  = document.getElementById('start')
-const pageBack  = document.getElementById('back')
-const main      = document.getElementById('main');
-const menu1     = document.getElementById('menu');
-const timer     = document.getElementById('timer')
+// Elementos da página
+const startButton = document.getElementById('start');
+const backButton = document.getElementById('back');
+const mainScreen = document.getElementById('main');
+const menuScreen = document.getElementById('menu');
+const timerScreen = document.getElementById('timer');
+const optionsContainer = document.getElementById('options');
+const eggImage = document.getElementById('egg-image');
 
-const soft      = document.getElementById('button-1')
-const medium    = document.getElementById('button-2')
-const hard      = document.getElementById('button-3')
-const extra     = document.getElementById('button-4')
+let timerInterval = null;
 
-const contador  = document.getElementById('timer');
-const imagem = document.getElementById('egg-image');
-var intervalo = null;
+// Dados dos tipos de ovos
+const eggTypes = {
+    'button-1': { minutes: 3, image: 'soft.png' },
+    'button-2': { minutes: 5, image: 'medium.png' },
+    'button-3': { minutes: 7, image: 'hard.png' },
+    'button-4': { minutes: 10, image: 'extra-hard.png' }
+};
 
-/* Botão "Start" */
-pageTurn.addEventListener("click", function() {
-    main.classList.add('hidden');
-    menu1.classList.remove('hidden');
+// Navega para a tela de menu
+startButton.addEventListener("click", () => {
+    mainScreen.classList.add('hidden');
+    menuScreen.classList.remove('hidden');
 });
 
-/* Botão "Voltar" */
-pageBack.addEventListener("click", function() {
-    menu1.classList.add('hidden');
-    timer.classList.add('hidden');
-    pageBack.classList.add('hidden');
-    menu1.classList.remove('hidden');
-    clearInterval(intervalo);
-    contador.innerHTML = "00:00";
-    console.log('Sim');
-    pageBack.style.display = "none"
-    imagem.src = "/HTML-CSS/projetos/projeto_contador/src/imagens/inicio.png"
-})
-
-/* Timer 3 Minutos */
-soft.addEventListener("click", function() {
-    var content = document.getElementById('menu');
-    content.classList.add('hidden');
-    timer.classList.remove('hidden');
-    pageBack.style.display = "block";
-    imagem.src = "/HTML-CSS/projetos/projeto_contador/src/imagens/soft.png"
-});
-
-/* Timer 5 Minutos */
-medium.addEventListener("click", function() {
-    var content = document.getElementById('menu');
-    content.classList.add('hidden');
-    timer.classList.remove('hidden');
-    pageBack.style.display = "block";
-    imagem.src = "/HTML-CSS/projetos/projeto_contador/src/imagens/medium.png"
-});
-
-/* Timer 7 Minutos */
-hard.addEventListener("click", function() {
-    var content = document.getElementById('menu');
-    content.classList.add('hidden');
-    timer.classList.remove('hidden');
-    pageBack.style.display = "block";
-    imagem.src = "/HTML-CSS/projetos/projeto_contador/src/imagens/hard.png"
-});
-
-/* Timer 10 Minutos */
-extra.addEventListener("click", function() {
-    var content = document.getElementById('menu');
-    content.classList.add('hidden');
-    timer.classList.remove('hidden');
-    pageBack.style.display = "block";
-    imagem.src = "/HTML-CSS/projetos/projeto_contador/src/imagens/extra-hard.png"
-});
-
-function startTimer(minutes) {
-    const tempoRestante = minutes * 60;
-    let tempoAtual = tempoRestante;
-
-    const menu = document.getElementById('options');
-    contador.classList.remove('hidden');
-    menu.classList.add('hidden');
-    pageBack.classList.remove('hidden');
-
-    intervalo = setInterval(function () {
-    const minutos = Math.floor(tempoAtual / 60);
-    const segundos = tempoAtual % 60;
-    const formatado = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-    contador.innerHTML = formatado;
-    
-
-    if (tempoAtual <= 0) {
-        clearInterval(intervalo);
-        contador.innerHTML = "Egg Cooked!";
-    } else { 
-        tempoAtual--;
+// Delegação de evento para os botões de opção
+optionsContainer.addEventListener('click', (event) => {
+    const button = event.target;
+    // Verifica se o clique foi realmente em um botão
+    if (button.tagName === 'BUTTON') {
+        const eggData = eggTypes[button.id];
+        if (eggData) {
+            eggImage.src = `src/imagens/${eggData.image}`;
+            menuScreen.classList.add('hidden');
+            timerScreen.classList.remove('hidden');
+            backButton.classList.remove('hidden');
+            startTimer(eggData.minutes);
+        }
     }
+});
+
+// Volta para a tela de menu
+backButton.addEventListener("click", () => {
+    // Para o timer
+    clearInterval(timerInterval);
+    
+    // Reseta a tela
+    timerScreen.innerHTML = "00:00";
+    timerScreen.classList.add('hidden');
+    backButton.classList.add('hidden');
+    eggImage.src = "src/imagens/inicio.png";
+
+    // Mostra o menu novamente
+    menuScreen.classList.remove('hidden');
+});
+
+// Função que inicia o contador
+function startTimer(minutes) {
+    let totalSeconds = minutes * 60;
+
+    // Limpa qualquer timer anterior para evitar bugs
+    clearInterval(timerInterval);
+
+    timerInterval = setInterval(() => {
+        if (totalSeconds <= 0) {
+            clearInterval(timerInterval);
+            timerScreen.innerHTML = "Egg Cooked! 🍳";
+            return;
+        }
+
+        totalSeconds--;
+
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        
+        timerScreen.innerHTML = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
     }, 1000);
 }

@@ -106,3 +106,33 @@ button:hover {
 .hidden {
     display: none;
 }
+
+@media (max-width: 600px) {
+    .container {
+        min-width: 90%;
+        /* Ocupa 90% da largura da tela */
+        min-height: auto;
+        /* Altura se ajusta ao conteúdo */
+        padding: 20px;
+    }
+
+    img {
+        height: 200px;
+        width: 200px;
+    }
+
+    #options {
+        grid-template-columns: 1fr;
+        /* Botões um embaixo do outro */
+    }
+
+    .main p,
+    #menu p {
+        font-size: 24px;
+    }
+
+    #timer {
+        font-size: 2.5rem;
+        /* Ajusta o tamanho da fonte do timer */
+    }
+}
